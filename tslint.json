@@ -1,0 +1,12 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "semicolon": [true, "always"],
+    "interface-name": [false],
+    "quotemark": [true, "single", "avoid-escape"],
+    "object-literal-sort-keys": false,
+    "no-console": false,
+    "max-line-length": false,
+    "member-access": false
+  }
+}

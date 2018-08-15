@@ -1,5 +1,4 @@
 FROM node:9-alpine
-ARG NPM_TOKEN
 
 # Create app directory
 RUN mkdir -p /app
@@ -10,5 +9,5 @@ COPY package.json ./
 RUN yarn --non-interactive --pure-lockfile
 
 # Add runtime & execute it
-COPY ./server.js ./server.js
+COPY ./dist ./dist
 CMD yarn start

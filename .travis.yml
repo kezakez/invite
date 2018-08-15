@@ -16,11 +16,8 @@ cache:
 install:
   - yarn
 
-test:
-  - yarn test
-
 script:
-  - yarn build
+  - yarn test && yarn build
 
 deploy:
   provider: script

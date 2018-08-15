@@ -23,6 +23,7 @@ script:
   - yarn build
 
 deploy:
-  - yarn push
+  provider: script
+  script: bash yarn push
   on:
     branch: master

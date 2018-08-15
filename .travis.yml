@@ -24,6 +24,6 @@ script:
 
 deploy:
   provider: script
-  script: bash yarn push
+  script: bash docker_push
   on:
     branch: master

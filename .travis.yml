@@ -1,0 +1,36 @@
+language: node_js
+
+node_js:
+  - 0.9
+
+sudo: required
+
+services:
+  - docker
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+stages:
+  - compile
+  - test
+  - name: deploy
+    if: branch = master
+
+install:
+  - yarn
+
+test:
+  - yarn test
+
+compile:
+  - yarn build
+  - yarn build:docker
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master

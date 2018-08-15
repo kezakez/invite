@@ -13,23 +13,16 @@ cache:
   directories:
     - node_modules
 
-stages:
-  - compile
-  - test
-  - name: deploy
-    if: branch = master
-
 install:
   - yarn
 
 test:
   - yarn test
 
-compile:
+script:
   - yarn build
 
 deploy:
-  provider: script
-  script: bash docker_push
+  - yarn push
   on:
     branch: master

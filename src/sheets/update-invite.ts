@@ -1,30 +1,28 @@
 import { google } from 'googleapis';
+
+import getData from './get-data';
 import getConfig from './config';
 import getToken from './auth';
 
 export default async function updateInviteData(code, updateDataArray) {
-  const { spreadsheetId } = await getConfig();
   console.log('updating invite data');
+  const { spreadsheetId } = await getConfig();
   const auth = await getToken();
-  const sheets = google.sheets({ version: 'v4', auth });
 
-  // get all the data
-  let res;
-  try {
-    res = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: 'GuestList',
-    });
-  } catch (err) {
-    console.log('The API returned an error: ' + err);
-  }
+  console.log({ updateDataArray });
+  const rows = await getData(spreadsheetId, auth);
 
   // store headings
-  const heading = res.data.values[0];
-  console.log(heading);
+  const headings = rows[0].reduce((acc, heading, idx, array) => {
+    acc[heading] = {
+      column: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[idx],
+      index: idx,
+    };
+    return acc;
+  }, {});
+  console.log({ headings });
 
-  // add row indexs
-  const rows = res.data.values;
+  // add row indexes
   const rowsIndexed = rows.map((row, index) => {
     return {
       index,
@@ -33,7 +31,19 @@ export default async function updateInviteData(code, updateDataArray) {
   });
 
   // filter out items that dont match
-  const rowsFiltered = rowsIndexed.filter((row) => row.data[0] === code);
+  const codeIndex = headings['SecretKey'].index;
+  const rowsFiltered = rowsIndexed.filter(
+    (row) => row.data[codeIndex] === code,
+  );
+
+  // key data based on headings
+  const rowsKeyed = rowsFiltered.map((row) => {
+    //row.data.map();
+    return {
+      index: row.index,
+      data: row.data,
+    };
+  });
 
   // update the row data with matching items
   // updateDataArray.forEach(update => {
@@ -46,33 +56,53 @@ export default async function updateInviteData(code, updateDataArray) {
 
   // update the sheet
 
-  console.log(rowsFiltered);
+  console.log(rowsKeyed);
 
-  // // get all the data that matches with row ids
-  // let values = [
-  //   ['2019-01-01', '2019-01-01', 'Y', 'Chicken', ''],
-  //   ['2019-01-01', '2019-01-01', 'Y', 'Beef', ''],
-  // ];
-  // const data = [
-  //   {
-  //     range: 'GuestList!C4:G',
-  //     values,
-  //   },
-  // ];
+  // get all the data that matches with row ids
+  const data = [
+    {
+      range: 'GuestList!C4:I4',
+      values: [
+        [
+          'localhost',
+          '2019-01-01',
+          '2019-01-01',
+          'Yes',
+          'Chicken',
+          '',
+          'Flametrees',
+        ],
+      ],
+    },
+    {
+      range: 'GuestList!C6:I6',
+      values: [
+        [
+          'localhost',
+          '2019-01-01',
+          '2019-01-01',
+          'No',
+          'Beef',
+          '',
+          'Flametrees',
+        ],
+      ],
+    },
+  ];
 
-  // try {
-  //   const result = await sheets.spreadsheets.values.batchUpdate({
-  //     spreadsheetId,
-  //     requestBody: {
-  //       data,
-  //       valueInputOption: 'RAW',
-  //     },
-  //   });
-  //   console.log(result.data.totalUpdatedCells);
-  //   return 'ok';
-  // } catch (err) {
-  //   console.log(err);
-  //   return 'Error updating invite data';
-  // }
+  try {
+    const sheets = google.sheets({ version: 'v4', auth });
+    const result = await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId,
+      requestBody: {
+        data,
+        valueInputOption: 'RAW',
+      },
+    });
+    console.log(`updated cells: ${result.data.totalUpdatedCells}`);
+  } catch (err) {
+    console.log(err);
+    return 'Error updating invite data';
+  }
   return 'done';
 }

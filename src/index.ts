@@ -31,16 +31,15 @@ app.get('/invite/:inviteId', async (req, res) => {
   res.render('index');
 });
 
-function transformBody(body) {
-  const result = [];
+function transformBody(body): string[][] {
+  const result: string[][] = [];
   Object.keys(body).map((key) => {
     const valueArray = Array.isArray(body[key]) ? body[key] : [body[key]];
     valueArray.map((item, index) => {
-      if (key === 'name') {
-        result.push({ name: item });
-      } else {
-        result[index][key] = item;
+      if (!result[index]) {
+        result[index] = [];
       }
+      result[index][key] = item;
     });
   });
   return result;

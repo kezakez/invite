@@ -1,10 +1,15 @@
 import { google } from 'googleapis';
+import util from 'util';
 
 import getData from './get-data';
 import getConfig from './config';
 import getToken from './auth';
 
-export default async function updateInviteData(code, updateDataArray) {
+export default async function updateInviteData(
+  code,
+  updateDataArray,
+  ipAddress,
+) {
   console.log('updating invite data');
   const { spreadsheetId } = await getConfig();
   const auth = await getToken();
@@ -13,14 +18,14 @@ export default async function updateInviteData(code, updateDataArray) {
   const rows = await getData(spreadsheetId, auth);
 
   // store headings
-  const headings = rows[0].reduce((acc, heading, idx, array) => {
+  const headings = rows[0].reduce((acc, heading, idx) => {
     acc[heading] = {
       column: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[idx],
       index: idx,
     };
     return acc;
   }, {});
-  console.log({ headings });
+  //console.log({ headings });
 
   // add row indexes
   const rowsIndexed = rows.map((row, index) => {
@@ -36,66 +41,37 @@ export default async function updateInviteData(code, updateDataArray) {
     (row) => row.data[codeIndex] === code,
   );
 
-  // key data based on headings
-  const rowsKeyed = rowsFiltered.map((row) => {
-    //row.data.map();
+  // create update model
+  const updateModel = rowsFiltered.map((row) => {
+    const rowNumber = row.index + 1;
+    console.log({ row });
+    // TODO make this work with any column names
+    const inputValues = updateDataArray.filter(
+      (updateItem) => updateItem.guest === row.data[1],
+    )[0];
+    console.log({ inputValues });
+    // TODO make this work with any column names
+    const updateValues = [
+      inputValues.attending,
+      inputValues.mealChoice,
+      inputValues.specialDiet,
+      inputValues.favouriteSong,
+    ];
     return {
-      index: row.index,
-      data: row.data,
+      range: `GuestList!C${rowNumber}:H${rowNumber}`, //TODO fix up col references
+      values: [[...updateValues, new Date().toString(), ipAddress]],
     };
   });
 
-  // update the row data with matching items
-  // updateDataArray.forEach(update => {
-  //   const item = rowsFiltered.filter(row => row[1] === update.match.name);
-
-  //   update.data.forEach(data => {
-  //     if (data)
-  //   });
-  // });
+  console.log(util.inspect(updateModel, { showHidden: false, depth: null }));
 
   // update the sheet
-
-  console.log(rowsKeyed);
-
-  // get all the data that matches with row ids
-  const data = [
-    {
-      range: 'GuestList!C4:I4',
-      values: [
-        [
-          'localhost',
-          '2019-01-01',
-          '2019-01-01',
-          'Yes',
-          'Chicken',
-          '',
-          'Flametrees',
-        ],
-      ],
-    },
-    {
-      range: 'GuestList!C6:I6',
-      values: [
-        [
-          'localhost',
-          '2019-01-01',
-          '2019-01-01',
-          'No',
-          'Beef',
-          '',
-          'Flametrees',
-        ],
-      ],
-    },
-  ];
-
   try {
     const sheets = google.sheets({ version: 'v4', auth });
     const result = await sheets.spreadsheets.values.batchUpdate({
       spreadsheetId,
       requestBody: {
-        data,
+        data: updateModel,
         valueInputOption: 'RAW',
       },
     });

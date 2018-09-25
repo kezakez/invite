@@ -19,7 +19,7 @@ app.get('/invite/:inviteId', async (req, res) => {
   const inviteId = req.params.inviteId;
   if (inviteId) {
     console.log(`requested invite with inviteId: ${inviteId}`);
-    const data = await getInviteData(inviteId);
+    const data = await getInviteData(inviteId, req.connection.remoteAddress);
     const isValidInvite = data && data.length > 0;
     if (isValidInvite) {
       console.log(`showing invite.ejs with data`, data);
@@ -27,7 +27,7 @@ app.get('/invite/:inviteId', async (req, res) => {
       return;
     }
   }
-  console.log(`showing index.ejs`);
+  console.log(`invalid invite id showing index.ejs`);
   res.render('index');
 });
 
@@ -49,7 +49,11 @@ app.post('/invite/:inviteId', async (req, res) => {
   const inviteId = req.params.inviteId;
   console.log(`posted invite with inviteId: ${inviteId}`);
   const inviteData = transformBody(req.body);
-  const resultStatus = await updateInviteData(inviteId, inviteData);
+  const resultStatus = await updateInviteData(
+    inviteId,
+    inviteData,
+    req.connection.remoteAddress,
+  );
   res.render('thanks', { message: resultStatus });
 });
 

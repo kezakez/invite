@@ -8,7 +8,7 @@ export default async function getData(spreadsheetId, auth) {
   try {
     res = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'GuestList',
+      range: 'GuestList!A:F',
     });
   } catch (err) {
     console.log('The API returned an error: ' + err);

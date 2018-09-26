@@ -7,3 +7,5 @@ config.json
 views/
 public/
 \.DS_Store
+
+docker-compose\.yml

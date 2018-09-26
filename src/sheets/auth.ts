@@ -6,7 +6,7 @@ import util from 'util';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = 'config/token.json';
 
 export default async () => {
   // Load client secrets from a local file.
@@ -15,7 +15,7 @@ export default async () => {
   try {
     console.log('reading credentials file');
     const content = await readFile(
-      path.join(process.cwd(), 'credentials.json'),
+      path.join(process.cwd(), 'config/credentials.json'),
     );
     credentials = JSON.parse(content.toString());
   } catch (err) {

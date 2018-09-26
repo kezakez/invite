@@ -7,7 +7,9 @@ export async function getConfig() {
   const readFile = util.promisify(fs.readFile);
   try {
     console.log('reading config file');
-    const content = await readFile(path.join(process.cwd(), 'config.json'));
+    const content = await readFile(
+      path.join(process.cwd(), 'config/config.json'),
+    );
     return JSON.parse(content.toString());
   } catch (err) {
     console.log('Error loading config file:', err);

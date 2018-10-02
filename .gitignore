@@ -9,3 +9,5 @@ public/
 \.DS_Store
 
 docker-compose\.yml
+
+nginx\.conf

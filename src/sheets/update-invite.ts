@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
 import util from 'util';
 
+import nowToString from './time';
 import getData from './get-data';
 import getConfig from './config';
 import getToken from './auth';
@@ -59,7 +60,7 @@ export default async function updateInviteData(
     ];
     return {
       range: `GuestList!C${rowNumber}:H${rowNumber}`, //TODO fix up col references
-      values: [[...updateValues, new Date().toString(), ipAddress]],
+      values: [[...updateValues, nowToString(), ipAddress]],
     };
   });
 

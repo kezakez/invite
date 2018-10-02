@@ -1,10 +1,11 @@
 import { google } from 'googleapis';
 
+import nowToString from './time';
 import getData from './get-data';
 import getConfig from './config';
 import getToken from './auth';
 
-export default async function getInviteData(code, ipAddress) {
+export default async function getInviteData(code: string, ipAddress: string) {
   console.log('getting invite data');
 
   const { spreadsheetId } = await getConfig();
@@ -23,11 +24,12 @@ export default async function getInviteData(code, ipAddress) {
   const rowsThatMatch = rowsIndexed.filter((row) => row.data[0] === code);
 
   // update last view information
+  const now = nowToString();
   const updateModel = rowsThatMatch.map((row) => {
     const rowNumber = row.index + 1;
     return {
       range: `GuestList!I${rowNumber}:J${rowNumber}`, //TODO fix up col references
-      values: [[new Date().toString(), ipAddress]],
+      values: [[now, ipAddress]],
     };
   });
 
@@ -37,7 +39,7 @@ export default async function getInviteData(code, ipAddress) {
       spreadsheetId,
       requestBody: {
         data: updateModel,
-        valueInputOption: 'RAW',
+        valueInputOption: 'USER_ENTERED',
       },
     });
     console.log(`updated cells: ${result.data.totalUpdatedCells}`);

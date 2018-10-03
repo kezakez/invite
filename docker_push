@@ -4,5 +4,5 @@ docker push $DOCKER_USERNAME/invite:latest
 
 echo "finished pushing image about to update server"
 export SSHPASS=$DEPLOY_PASS
-sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST ~invite/update-invite
+sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST ~/invite/update-invite
 echo "finished updating server"

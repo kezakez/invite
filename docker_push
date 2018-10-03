@@ -2,5 +2,6 @@
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker push $DOCKER_USERNAME/invite:latest
 
-export SSHPASS=$DEPLOY_PASS
-sshpass -e ssh $DEPLOY_USER@$DEPLOY_HOST ~invite/update-invite
+echo "finished pushing image about to update server"
+sshpass -p '$DEPLOY_PASS' ssh $DEPLOY_USER@$DEPLOY_HOST ~invite/update-invite
+echo "finished updating server"

@@ -5,6 +5,11 @@ node_js:
 
 sudo: required
 
+addons:
+  apt:
+    packages:
+      - sshpass
+
 services:
   - docker
 

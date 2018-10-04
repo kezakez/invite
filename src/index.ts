@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+import remoteIpAddress from './ip-address';
 import { getInviteData, updateInviteData } from './sheets';
 
 const port = 3000;
@@ -19,7 +20,7 @@ app.get('/invite/:inviteId', async (req, res) => {
   const inviteId = req.params.inviteId;
   if (inviteId) {
     console.log(`requested invite with inviteId: ${inviteId}`);
-    const data = await getInviteData(inviteId, req.connection.remoteAddress);
+    const data = await getInviteData(inviteId, remoteIpAddress(req));
     const isValidInvite = data && data.length > 0;
     if (isValidInvite) {
       console.log(`showing invite.ejs with data`, data);
@@ -52,7 +53,7 @@ app.post('/invite/:inviteId', async (req, res) => {
   const resultStatus = await updateInviteData(
     inviteId,
     inviteData,
-    req.connection.remoteAddress,
+    remoteIpAddress(req),
   );
   res.render('thanks', { message: resultStatus });
 });

@@ -57,7 +57,7 @@ app.post('/invite/:inviteId', (req, res, next) => {
         inviteData,
         remoteIpAddress(req),
       );
-      if (resultStatus !== 'done') {
+      if (resultStatus === 'done') {
         res.redirect(`/thanks/${inviteId}`);
       } else {
         throw new Error(resultStatus);

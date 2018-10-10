@@ -4,6 +4,20 @@ import bodyParser from 'body-parser';
 import remoteIpAddress from './ip-address';
 import { getInviteData, updateInviteData } from './sheets';
 
+function transformBody(body): string[][] {
+  const result: string[][] = [];
+  Object.keys(body).map((key) => {
+    const valueArray = Array.isArray(body[key]) ? body[key] : [body[key]];
+    valueArray.map((item, index) => {
+      if (!result[index]) {
+        result[index] = [];
+      }
+      result[index][key] = item;
+    });
+  });
+  return result;
+}
+
 const port = 3000;
 const app = express();
 
@@ -32,30 +46,35 @@ app.get('/invite/:inviteId', async (req, res) => {
   res.render('index');
 });
 
-function transformBody(body): string[][] {
-  const result: string[][] = [];
-  Object.keys(body).map((key) => {
-    const valueArray = Array.isArray(body[key]) ? body[key] : [body[key]];
-    valueArray.map((item, index) => {
-      if (!result[index]) {
-        result[index] = [];
+app.post('/invite/:inviteId', (req, res, next) => {
+  Promise.resolve()
+    .then(async function() {
+      const inviteId = req.params.inviteId;
+      console.log(`posted invite with inviteId: ${inviteId}`);
+      const inviteData = transformBody(req.body);
+      const resultStatus = await updateInviteData(
+        inviteId,
+        inviteData,
+        remoteIpAddress(req),
+      );
+      if (resultStatus !== 'done') {
+        res.redirect(`/thanks/${inviteId}`);
+      } else {
+        throw new Error(resultStatus);
       }
-      result[index][key] = item;
-    });
-  });
-  return result;
-}
+    })
+    .catch(next);
+});
 
-app.post('/invite/:inviteId', async (req, res) => {
+app.get('/thanks/:inviteId', async (req, res) => {
   const inviteId = req.params.inviteId;
-  console.log(`posted invite with inviteId: ${inviteId}`);
-  const inviteData = transformBody(req.body);
-  const resultStatus = await updateInviteData(
-    inviteId,
-    inviteData,
-    remoteIpAddress(req),
-  );
-  res.render('thanks', { message: resultStatus });
+  console.log(`showing thanks with inviteId: ${inviteId}`);
+  res.render('thanks', { inviteLink: `/invite/${inviteId}` });
+});
+
+app.use(function(error, req, res, next) {
+  res.status(500);
+  res.render('error', { title: '500: Internal Server Error', error: error });
 });
 
 app.listen(port, () =>

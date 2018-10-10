@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install app dependencies
 COPY package.json ./
-RUN yarn --non-interactive --pure-lockfile
+RUN yarn --production --non-interactive --pure-lockfile
 
 # Add runtime & execute it
 COPY ./dist ./dist

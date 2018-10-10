@@ -14,7 +14,7 @@
     "build": "yarn build:compile && yarn build:docker",
     "build:compile": "tsc -p .",
     "build:docker": "docker build ./ -f ./Dockerfile -t kezakez/invite:latest",
-    "start": "node dist/index.js"
+    "start": "NODE_ENV=production node dist/index.js"
   },
   "prettier": {
     "arrowParens": "always",

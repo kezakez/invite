@@ -78,6 +78,7 @@ export default async function updateInviteData(
     });
     console.log(`updated cells: ${result.data.totalUpdatedCells}`);
   } catch (err) {
+    console.log('Error updating invite data');
     console.log(err);
     return 'Error updating invite data';
   }

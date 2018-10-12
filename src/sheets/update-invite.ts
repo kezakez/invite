@@ -6,11 +6,22 @@ import getData from './get-data';
 import getConfig from './config';
 import getToken from './auth';
 
-export default async function updateInviteData(
-  code,
-  updateDataArray,
-  ipAddress,
-) {
+function transformBody(body): string[][] {
+  const result: string[][] = [];
+  Object.keys(body).map((key) => {
+    const valueArray = Array.isArray(body[key]) ? body[key] : [body[key]];
+    valueArray.map((item, index) => {
+      if (!result[index]) {
+        result[index] = [];
+      }
+      result[index][key] = item;
+    });
+  });
+  return result;
+}
+
+export default async function updateInviteData(code, reqBody, ipAddress) {
+  const updateDataArray = transformBody(reqBody);
   console.log('updating invite data');
   const { spreadsheetId } = await getConfig();
   const auth = await getToken();

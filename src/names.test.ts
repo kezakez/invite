@@ -8,7 +8,7 @@ describe('names', () => {
       ['code', 'Ruby', 'No'],
       ['code', 'Peter', 'No'],
     ];
-    expect(getNames(data)).toEqual('Keiran, David, Ruby and Peter');
+    expect(getNames(data)).toEqual('Keiran, David, Ruby & Peter');
   });
   it('should format 1 name', () => {
     const data = [
@@ -21,6 +21,6 @@ describe('names', () => {
       ['code', 'Keiran', 'Yes', 'SpecialDiet', 'special text', 'song'],
       ['code', 'David', 'No'],
     ];
-    expect(getNames(data)).toEqual('Keiran and David');
+    expect(getNames(data)).toEqual('Keiran & David');
   });
 });

@@ -59,15 +59,15 @@ export default async function updateInviteData(code, reqBody, ipAddress) {
     console.log({ row });
     // TODO make this work with any column names
     const inputValues = updateDataArray.filter(
-      (updateItem) => updateItem.guest === row.data[1],
+      (updateItem) => updateItem['guest'] === row.data[1],
     )[0];
     console.log({ inputValues });
     // TODO make this work with any column names
     const updateValues = [
-      inputValues.attending,
-      inputValues.mealChoice,
-      inputValues.specialDiet,
-      inputValues.favouriteSong,
+      inputValues['attending'],
+      inputValues['mealChoice'],
+      inputValues['specialDiet'],
+      inputValues['favouriteSong'],
     ];
     return {
       range: `GuestList!C${rowNumber}:H${rowNumber}`, //TODO fix up col references

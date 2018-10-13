@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 
 import remoteIpAddress from './ip-address';
 import { getInviteData, updateInviteData } from './sheets';
+import { getNames } from './names';
 
 const port = 3000;
 const app = express();
@@ -26,7 +27,7 @@ app.get('/invite/:inviteId', (req, res, next) => {
         const isValidInvite = data && data.length > 0;
         if (isValidInvite) {
           console.log(`showing invite.ejs with data`, data);
-          res.render('invite', { title: 'Hey', data: data });
+          res.render('invite', { data, names: getNames(data) });
           return;
         }
       }

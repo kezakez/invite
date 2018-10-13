@@ -23,6 +23,8 @@ export default async function getInviteData(code: string, ipAddress: string) {
 
   const rowsThatMatch = rowsIndexed.filter((row) => row.data[0] === code);
 
+  if (rowsThatMatch.length === 0) return null;
+
   // update last view information
   const now = nowToString();
   const updateModel = rowsThatMatch.map((row) => {

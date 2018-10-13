@@ -1,9 +1,5 @@
-import { google } from 'googleapis';
-
-import nowToString from './time';
-import getData from './get-data';
-import getConfig from './config';
-import getToken from './auth';
+import { getToken, getConfig, getData } from './cache';
+import { updateLastView } from './sheet-data';
 
 export default async function getInviteData(code: string, ipAddress: string) {
   console.log('getting invite data');
@@ -25,30 +21,8 @@ export default async function getInviteData(code: string, ipAddress: string) {
 
   if (rowsThatMatch.length === 0) return null;
 
-  // update last view information
-  const now = nowToString();
-  const updateModel = rowsThatMatch.map((row) => {
-    const rowNumber = row.index + 1;
-    return {
-      range: `GuestList!I${rowNumber}:J${rowNumber}`, //TODO fix up col references
-      values: [[now, ipAddress]],
-    };
-  });
-
-  try {
-    const sheets = google.sheets({ version: 'v4', auth });
-    const result = await sheets.spreadsheets.values.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        data: updateModel,
-        valueInputOption: 'USER_ENTERED',
-      },
-    });
-    console.log(`updated cells: ${result.data.totalUpdatedCells}`);
-  } catch (err) {
-    console.log(err);
-    return 'Error updating invite data';
-  }
+  // update entry, no need to wait on a result
+  updateLastView(spreadsheetId, auth, rowsThatMatch, ipAddress);
 
   return rowsThatMatch.map((row) => row.data);
 }

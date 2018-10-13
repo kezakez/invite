@@ -12,11 +12,6 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-app.get('/', (req, res) => {
-  console.log(`requested root showing index.ejs`);
-  res.render('index');
-});
-
 app.get('/invite/:inviteId', (req, res, next) => {
   Promise.resolve()
     .then(async function() {
@@ -61,6 +56,11 @@ app.get('/thanks/:inviteId', (req, res) => {
   const inviteId = req.params.inviteId;
   console.log(`showing thanks with inviteId: ${inviteId}`);
   res.render('thanks', { inviteLink: `/invite/${inviteId}` });
+});
+
+app.get('/*', (req, res) => {
+  console.log(`requested root showing index.ejs`);
+  res.render('index');
 });
 
 app.use(function(error, req, res, next) {

@@ -1,7 +1,7 @@
 import { getNames } from './names';
 
 describe('names', () => {
-  it('should format names', () => {
+  it('should format 4 names', () => {
     const data = [
       ['code', 'Keiran', 'Yes', 'SpecialDiet', 'special text', 'song'],
       ['code', 'David', 'No'],
@@ -9,5 +9,18 @@ describe('names', () => {
       ['code', 'Peter', 'No'],
     ];
     expect(getNames(data)).toEqual('Keiran, David, Ruby and Peter');
+  });
+  it('should format 1 name', () => {
+    const data = [
+      ['code', 'Keiran', 'Yes', 'SpecialDiet', 'special text', 'song'],
+    ];
+    expect(getNames(data)).toEqual('Keiran');
+  });
+  it('should format 2 names', () => {
+    const data = [
+      ['code', 'Keiran', 'Yes', 'SpecialDiet', 'special text', 'song'],
+      ['code', 'David', 'No'],
+    ];
+    expect(getNames(data)).toEqual('Keiran and David');
   });
 });

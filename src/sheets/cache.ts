@@ -6,6 +6,7 @@ import {
 } from './sheet-data';
 import { default as getConfigReal } from './config';
 import { default as getTokenReal } from './auth';
+import { Result } from './result';
 
 const cache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
@@ -26,7 +27,7 @@ export async function updateData(
   rowsFiltered,
   updateDataArray,
   ipAddress,
-): Promise<string> {
+): Promise<Result> {
   const cacheKey = `data-${spreadsheetId}-${auth}`;
 
   cache.del(cacheKey);

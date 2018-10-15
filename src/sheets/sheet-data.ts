@@ -1,6 +1,7 @@
 import util from 'util';
 import { google } from 'googleapis';
 import nowToString from './time';
+import { Result } from './result';
 
 export async function getData(spreadsheetId, auth) {
   const sheets = google.sheets({ version: 'v4', auth });
@@ -10,7 +11,7 @@ export async function getData(spreadsheetId, auth) {
   try {
     res = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'GuestList!A:F',
+      range: 'GuestList!A:G',
     });
   } catch (err) {
     console.log('The API returned an error: ' + err);
@@ -35,7 +36,7 @@ export async function updateLastView(
   const updateModel = rowsThatMatch.map((row) => {
     const rowNumber = row.index + 1;
     return {
-      range: `GuestList!I${rowNumber}:J${rowNumber}`, //TODO fix up col references
+      range: `GuestList!J${rowNumber}:K${rowNumber}`, //TODO fix up col references
       values: [[now, ipAddress]],
     };
   });
@@ -55,34 +56,55 @@ export async function updateLastView(
   }
 }
 
+function getLock(current: string): number {
+  return Number.parseInt(current) || 0;
+}
+
 export async function updateData(
   spreadsheetId,
   auth,
   rowsFiltered,
   updateDataArray,
   ipAddress,
-): Promise<string> {
+): Promise<Result> {
   // create update model
-  const updateModel = rowsFiltered.map((row) => {
-    const rowNumber = row.index + 1;
-    console.log({ row });
-    // TODO make this work with any column names
-    const inputValues = updateDataArray.filter(
-      (updateItem) => updateItem['guest'] === row.data[1],
-    )[0];
-    console.log({ inputValues });
-    // TODO make this work with any column names
-    const updateValues = [
-      inputValues['attending'],
-      inputValues['mealChoice'],
-      inputValues['specialDiet'],
-      inputValues['favouriteSong'],
-    ];
-    return {
-      range: `GuestList!C${rowNumber}:H${rowNumber}`, //TODO fix up col references
-      values: [[...updateValues, nowToString(), ipAddress]],
-    };
-  });
+  let updateModel;
+  try {
+    updateModel = rowsFiltered.map((row) => {
+      const rowNumber = row.index + 1;
+      console.log({ row });
+      // TODO make this work with any column names
+      const inputValues = updateDataArray.filter(
+        (updateItem) => updateItem['guest'] === row.data[1],
+      )[0];
+      // TODO make this work with any column names
+      const dataLock = row.data[6];
+      if (getLock(inputValues['lock']) !== getLock(dataLock)) {
+        console.log(
+          `The data was already updated input: '${getLock(
+            inputValues['lock'],
+          )}' data: '${getLock(dataLock)}'`,
+        );
+        throw new Error('The data was already updated');
+      }
+      console.log({ inputValues });
+      // TODO make this work with any column names
+      const updateValues = [
+        inputValues['attending'],
+        inputValues['mealChoice'],
+        inputValues['specialDiet'],
+        inputValues['favouriteSong'],
+      ];
+      return {
+        range: `GuestList!C${rowNumber}:I${rowNumber}`, //TODO fix up col references
+        values: [
+          [...updateValues, getLock(dataLock) + 1, nowToString(), ipAddress],
+        ],
+      };
+    });
+  } catch (error) {
+    return Result.alreadySaved;
+  }
 
   console.log(util.inspect(updateModel, { showHidden: false, depth: null }));
 
@@ -98,9 +120,9 @@ export async function updateData(
     });
     console.log(`updated cells: ${result.data.totalUpdatedCells}`);
   } catch (err) {
-    console.log('Error updating invite data');
+    console.log(`Error updating invite data`);
     console.log(err);
-    return 'Error updating invite data';
+    return Result.error;
   }
-  return 'done';
+  return Result.success;
 }

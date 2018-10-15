@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import remoteIpAddress from './ip-address';
-import { getInviteData, updateInviteData } from './sheets';
+import { getInviteData, updateInviteData, Result } from './sheets';
 import { getNames } from './names';
 
 const port = 3000;
@@ -43,10 +43,12 @@ app.post('/invite/:inviteId', (req, res, next) => {
         req.body,
         remoteIpAddress(req),
       );
-      if (resultStatus === 'done') {
+      if (resultStatus === Result.success) {
         res.redirect(`/thanks/${inviteId}`);
+      } else if (resultStatus === Result.alreadySaved) {
+        res.redirect(`/error-stale/${inviteId}`);
       } else {
-        throw new Error(resultStatus);
+        throw new Error();
       }
     })
     .catch(next);
@@ -56,6 +58,18 @@ app.get('/thanks/:inviteId', (req, res) => {
   const inviteId = req.params.inviteId;
   console.log(`showing thanks with inviteId: ${inviteId}`);
   res.render('thanks', { inviteLink: `/invite/${inviteId}` });
+});
+
+app.get('/error-stale/:inviteId', (req, res) => {
+  const inviteId = req.params.inviteId;
+  console.log(`showing error-stale with inviteId: ${inviteId}`);
+  res.render('error-stale', { inviteLink: `/invite/${inviteId}` });
+});
+
+app.get('/error/:inviteId', (req, res) => {
+  const inviteId = req.params.inviteId;
+  console.log(`showing error with inviteId: ${inviteId}`);
+  res.render('error');
 });
 
 app.get('/*', (req, res) => {

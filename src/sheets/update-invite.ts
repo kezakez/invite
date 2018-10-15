@@ -1,4 +1,6 @@
-import { getToken, getConfig, getData, updateData } from './cache';
+import { getToken, getConfig, updateData } from './cache';
+import { getData } from './sheet-data';
+import { Result } from './result';
 
 function transformBody(body): string[][] {
   const result: string[][] = [];
@@ -14,7 +16,11 @@ function transformBody(body): string[][] {
   return result;
 }
 
-export default async function updateInviteData(code, reqBody, ipAddress) {
+export default async function updateInviteData(
+  code,
+  reqBody,
+  ipAddress,
+): Promise<Result> {
   const updateDataArray = transformBody(reqBody);
   console.log('updating invite data');
   const { spreadsheetId } = await getConfig();

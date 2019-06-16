@@ -4,8 +4,6 @@ coverage/
 credentials.json
 token.json
 config.json
-views/
-public/
 \.DS_Store
 
 docker-compose\.yml

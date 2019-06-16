@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./head %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="decoration">
+      <img src="/flowers-top.svg" class="flower-top" />
+      <div class="border">
+        <div class="other-pages">
+          <%
+  var today = new Date();
+  var date=new Date(2020, 0, 19);
+  var daysLeft = Math.ceil((date.getTime()-today.getTime())/(1000*60*60*24));
+  %>
+          <div class="phrase">
+            <p class="en">
+              <%= `Only ${daysLeft} days to go!` %>
+            </p>
+            <p class="pt">
+              <%= `Faltam somente ${daysLeft} dias!` %>
+            </p>
+          </div>
+        </div>
+      </div>
+      <img src="/flowers-bottom.svg" class="flower-bottom" />
+    </div>
+  </div>
+  <script src="/bundle.js"></script>
+</body>
+
+</html>

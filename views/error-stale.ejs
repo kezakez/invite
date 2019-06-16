@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./head %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="decoration">
+      <img src="/flowers-top.svg" class="flower-top" />
+      <div class="border">
+        <div class="other-pages">
+          <div class="phrase">
+            <p class="en">Your RSVP details were not saved because they were stale. Most likely this is because another
+              member of your group has already saved the RSVP.</p>
+          </div>
+          <div class="phrase">
+            <p class="en">Please <a href="<%= inviteLink %>" style="text-decoration: underline;">click here</a> to view
+              and update the most recent RSVP
+              details.</p>
+          </div>
+          </a>
+        </div>
+      </div>
+      <img src="/flowers-bottom.svg" class="flower-bottom" />
+    </div>
+  </div>
+  <script src="/bundle.js"></script>
+</body>
+
+</html>

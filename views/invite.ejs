@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./head %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="decoration">
+      <img src="/flowers-top.svg" class="flower-top" />
+      <div class="border">
+        <div class="invite">
+          <div class="header">
+            <p>My great</p>
+            <h1>Party</h1>
+          </div>
+          <div class="wrap-parent">
+            <div class="details">
+              <div class="phrase">
+                <p class="en">Dear
+                  <%= names %>,
+                </p>
+              </div>
+              <div class="phrase">
+                <p class="en">It is with great pleasure that we invite you to party.</p>
+              </div>
+              <div class="phrase">
+                <p class="en">On a date, at</p>
+              </div>
+              <div class="phrase">
+                <p><a href="https://www.google.com/maps">a place</a></p>
+              </div>
+              <div class="phrase extra-info">
+                <p class="en">The attire will be smart casual.</p>
+              </div>
+              <hr>
+              <div class="meal-section">
+                <div class="phrase">
+                  <p class="en">The meals are ordered in advance, please select your meal when you
+                    RSVP.
+                    On the menu there is a choice of:</p>
+                </div>
+                <div class="phrase meal">
+                  <p class="en">Steak</p>
+                </div>
+                <hr>
+                <div class="phrase meal">
+                  <p class="en">Chicken</p>
+                </div>
+                <hr>
+                <div class="phrase meal">
+                  <p class="en">Fish</p>
+                </div>
+              </div>
+            </div>
+            <form action="" method="POST">
+              <% data.forEach(function(item){ %>
+              <div class="mdc-card">
+                <div class="field">
+                  <p>
+                    <%= item[1] %>
+                  </p>
+                </div>
+                <input type="hidden" name="guest" value="<%= item[1] %>">
+                <input type="hidden" name="lock" value="<%= item[6] %>">
+                <div class="field">
+                  <div class="inv-mdc-select">
+                    <select name="attending" class="inv-mdc-select__native-control">
+                      <option value=""></option>
+                      <option value="Yes" <%=item[2]==='Yes' ? 'selected' : null %>>Yes</option>
+                      <option value="No" <%=item[2]==='No' ? 'selected' : null %>>No</option>
+                    </select>
+                    <label for="attending" class="inv-mdc-floating-label">Will you attend?</label>
+                    <div class="inv-mdc-line-ripple"></div>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="inv-mdc-select">
+                    <select name="mealChoice" class="inv-mdc-select__native-control">
+                      <option value=""></option>
+                      <option value="Beef" <%=item[3]==='Beef' ? 'selected' : null %>>Beef</option>
+                      <option value="Chicken" <%=item[3]==='Chicken' ? 'selected' : null %>>Chicken</option>
+                      <option value="Fish" <%=item[3]==='Fish' ? 'selected' : null %>>Fish</option>
+                      <option value="SpecialDiet" <%=item[3]==='SpecialDiet' ? 'selected' : null %>>Special dietary
+                        requirements</option>
+                    </select>
+                    <label for="mealChoice" class="inv-mdc-floating-label">Meal choice?</label>
+                    <div class="inv-mdc-line-ripple"></div>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="inv-mdc-text-field">
+                    <label class="inv-mdc-floating-label inv-mdc-floating-label--float-above" for="specialDiet">
+                      Special diet details
+                    </label>
+                    <input type="text" class="inv-mdc-text-field__input" name="specialDiet" id="specialDiet"
+                      value="<%=item[4]%>">
+                    <div class="inv-mdc-line-ripple"></div>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="inv-mdc-text-field">
+                    <label class="inv-mdc-floating-label inv-mdc-floating-label--float-above" for="specialDiet">
+                      Song requests
+                    </label>
+                    <input type="text" class="inv-mdc-text-field__input" name="favouriteSong" id="favouriteSong"
+                      value="<%= item[5] %>">
+                    <div class="inv-mdc-line-ripple"></div>
+                  </div>
+                </div>
+              </div>
+              <% }); %>
+              <div class="field button-field">
+                <button type="submit" class="inv-mdc-button inv-mdc-button--raised">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <img src="/flowers-bottom.svg" class="flower-bottom" />
+    </div>
+  </div>
+  <script src="/bundle.js"></script>
+</body>
+
+</html>

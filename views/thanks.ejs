@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./head %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="decoration">
+      <img src="/flowers-top.svg" class="flower-top" />
+      <div class="border">
+        <div class="other-pages">
+          <div class="phrase">
+            <p class="en">Thank you!</p>
+          </div>
+          <div class="phrase">
+            <p class="en">Your RSVP has been confirmed successfully.</p>
+          </div>
+          <a href="<%= inviteLink %>">
+            <div class="phrase">
+              <p class="en">Feel free to return to your invitation.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <img src="/flowers-bottom.svg" class="flower-bottom" />
+    </div>
+  </div>
+  <script src="/bundle.js"></script>
+</body>
+
+</html>

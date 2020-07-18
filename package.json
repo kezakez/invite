@@ -12,7 +12,7 @@
     "watch-test": "NODE_ENV=test jest --coverage --no-cache --watchAll",
     "watch": "tsc-watch --onSuccess \"node --inspect dist/index.js\" --onFailure \"echo tsc-watch detected a compilation failure\"",
     "build": "yarn build:compile && yarn build:docker",
-    "build:compile": "tsc -p .",
+    "build:compile": "rm -rf dist && tsc -p .",
     "build:docker": "docker build ./ -f ./Dockerfile -t kezakez/invite:latest",
     "start": "NODE_ENV=production node dist/index.js"
   },

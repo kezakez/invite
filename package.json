@@ -26,7 +26,7 @@
   "dependencies": {
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "googleapis": "^32.0.0",
+    "googleapis": "^39.1.0",
     "luxon": "^1.4.2",
     "node-cache": "^4.2.0",
     "promisify": "^0.0.3",

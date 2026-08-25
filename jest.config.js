@@ -1,13 +1,7 @@
 module.exports = {
-  globals: {
-    'ts-jest': {
-      tsConfigFile: 'tsconfig.json',
-    },
-  },
   moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': '<rootDir>/node_modules/babel-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
   },
   testPathIgnorePatterns: ['dist/'],
   testMatch: ['**/?(*.)(spec|test).(js|jsx|ts|tsx)'],

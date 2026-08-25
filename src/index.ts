@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 
 import remoteIpAddress from './ip-address';
 import { getInviteData, updateInviteData, Result } from './sheets';
@@ -10,7 +9,7 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('./public'));
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.get('/invite/:inviteId', (req, res, next) => {
   Promise.resolve()
@@ -72,7 +71,7 @@ app.get('/error/:inviteId', (req, res) => {
   res.render('error');
 });
 
-app.get('/*', (req, res) => {
+app.get(['/', '/*splat'], (req, res) => {
   console.log(`requested root showing index.ejs`);
   res.render('index');
 });
